@@ -671,11 +671,17 @@ func (r *icebergTableResource) calculateSchemaUpdates(ctx context.Context, plan,
 		return nil
 	}
 
+	// Compute last-column-id as the max of the table's current value and the new
+	// schema's highest field ID.  This keeps the value monotonically non-decreasing,
+	// which is required by some catalogs (e.g. AWS S3 Tables) even when columns are
+	// being dropped.
+	lastColumnID := max(tbl.Metadata().LastColumnID(), planIceberg.HighestFieldID())
+
 	// Return two events:
 	// 1. Add the schema with new schema ID.
 	// 2. Set the table schema explicitly to that new ID.
 	return []table.Update{
-		table.NewAddSchemaUpdate(planIceberg),
+		table.NewAddSchemaUpdate(planIceberg, lastColumnID),
 		table.NewSetCurrentSchemaUpdate(int(newSchemaID)),
 	}
 }
