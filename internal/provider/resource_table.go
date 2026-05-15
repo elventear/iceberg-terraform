@@ -333,7 +333,7 @@ func (r *icebergTableResource) ConfigureCatalog(ctx context.Context, diags *diag
 		return
 	}
 
-	if r.provider.catalogURI == "" {
+	if r.provider.catalogURI == "" && r.provider.catalogURI != "s3tables" {
 		// The provider might not be fully configured yet (e.g. during plan if URI is unknown)
 
 		return
@@ -872,7 +872,7 @@ func (r *icebergTableResource) Delete(ctx context.Context, req resource.DeleteRe
 	tableName := data.Name.ValueString()
 	tableIdent := append(namespaceName, tableName)
 
-	err := r.catalog.DropTable(ctx, tableIdent)
+	err := r.catalog.PurgeTable(ctx, tableIdent)
 	if err != nil {
 		if errors.Is(err, catalog.ErrNoSuchTable) {
 			// If the table is already gone, we don't need to do anything.

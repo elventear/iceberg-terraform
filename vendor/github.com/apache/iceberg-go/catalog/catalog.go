@@ -126,6 +126,7 @@ type Catalog interface {
 	LoadTable(ctx context.Context, identifier table.Identifier) (*table.Table, error)
 	// DropTable tells the catalog to drop the table entirely.
 	DropTable(ctx context.Context, identifier table.Identifier) error
+	PurgeTable(ctx context.Context, identifier table.Identifier) error
 	// RenameTable tells the catalog to rename a given table by the identifiers
 	// provided, and then loads and returns the destination table
 	RenameTable(ctx context.Context, from, to table.Identifier) (*table.Table, error)

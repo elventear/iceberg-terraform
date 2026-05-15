@@ -119,7 +119,7 @@ func (r *icebergNamespaceResource) ConfigureCatalog(ctx context.Context, diags *
 		return
 	}
 
-	if r.provider.catalogURI == "" {
+	if r.provider.catalogURI == "" && r.provider.catalogURI != "s3tables" {
 		// The provider might not be fully configured yet (e.g. during plan if URI is unknown)
 
 		return
